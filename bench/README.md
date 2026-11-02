@@ -37,7 +37,9 @@ This one works, end to end: a Nano and an HC-SR04 on a breadboard, with an optio
 
 *Ours is a US-025A, a clone of the HC-SR04. Same four pins in the same order (VCC, Trig, Echo, GND), same wiring, same sketch. Either board works.*
 
-Flash `bench/bench.ino` for the sensor alone. Open `bench.html` on localhost in Chrome, click **Connect the Arduino**, and pick the board. Press **D**: moving an object in front of the sensor reads `moving`; a still hand at about 40 cm or closer reads `close`, further away reads `here`, and an empty room reads `nobody` after two seconds. Movement is inferred from a distance change of at least 4 cm, so the sensor must be aimed at the moving object.
+Flash `bench/bench.ino` for the sensor and screen. The sketch uses an SSD1306 128 x 64 I2C OLED at address `0x3C`; install the **U8g2** library from the Arduino IDE Library Manager first. The OLED shows **SOMEONE CLOSE** at 40 cm or nearer and **NO ONE CLOSE** beyond 45 cm, plus the measured distance. The gap between the two thresholds stops the message flickering at the edge. The ultrasonic sensor detects distance, not identity, so it cannot tell a person from another object.
+
+Open `bench.html` on localhost in Chrome, click **Connect the Arduino**, and pick the board. Press **D**: moving an object in front of the sensor reads `moving`; a still hand at about 40 cm or closer reads `close`, further away reads `here`, and an empty room reads `nobody` after two seconds. Movement is inferred from a distance change of at least 4 cm, so the sensor must be aimed at the moving object.
 
 **The lag is the table, not the wire.** Each row's hold (0.1, 0.5, 1 and 2 seconds in `bench/table-bench.js`) is how long a rule has to stay true before the state changes, and the readings are smoothed so one bad echo doesn't count. Short holds feel instant and flicker; long holds feel calm and slow. Choosing them is part of your table.
 
