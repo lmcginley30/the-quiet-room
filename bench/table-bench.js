@@ -13,9 +13,10 @@
 
 window.TABLE = {
   // The HC-SR04 example. Replace these with your own signals and rows.
-  signals: ['present', 'near'],
+  signals: ['present', 'near', 'moving'],
 
   states: [
+    { name: 'moving', when: s => s.moving > 0.55,  hold: 0.1 },
     { name: 'close',  when: s => s.near > 0.85,   hold: 0.5 },
     { name: 'here',   when: s => s.present > 0.5, hold: 1 },
     { name: 'nobody', when: s => s.present < 0.2, hold: 2 },

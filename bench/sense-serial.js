@@ -25,6 +25,29 @@ const SIGNALS = {
   // echo does not count as somebody leaving.
   present: r => (r.cm !== undefined && r.cm < 150 ? 1 : 0),
 
+  // moving: distance changed by at least 4 cm; keep the signal on briefly so
+  // the State Table can catch it. Ignore readings outside the sensor's range.
+  moving: (() => {
+    let anchor = null;
+    let movingUntil = 0;
+    return r => {
+      const now = performance.now();
+      if (r.cm === undefined || r.cm < 2 || r.cm > 200) {
+        anchor = null;
+        return 0;
+      }
+      if (anchor === null) {
+        anchor = r.cm;
+        return 0;
+      }
+      if (Math.abs(r.cm - anchor) >= 4) {
+        anchor = r.cm;
+        movingUntil = now + 600;
+      }
+      return now < movingUntil ? 1 : 0;
+    };
+  })(),
+
   // Your signal goes here. A photoresistor printed as "light":
   //   shade: r => (r.light === undefined ? 0 : clamp(1 - r.light / 1023)),
 };
