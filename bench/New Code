@@ -1,0 +1,45 @@
+const int trigPin = 9;
+const int echoPin = 10;
+const int ledPin = 13; // Built-in LED or external LED on pin 13
+
+// Threshold distance in centimeters (turns on if closer than this value)
+const long thresholdDistance = 20; 
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Clear the trigPin by setting it LOW for 2 microseconds
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  // Trigger the sensor by setting TRIG pin HIGH for 10 microseconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Read the ECHO pin: returns the sound wave travel time in microseconds
+  long duration = pulseIn(echoPin, HIGH);
+
+  // Calculate the distance in centimeters
+  // Speed of sound is ~0.034 cm/microsecond (divided by 2 for the round trip)
+  long distance = duration * 0.034 / 2;
+
+  // Print the distance to the Serial Monitor for debugging
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  // Check if an object is closer than the threshold distance
+  if (distance > 0 && distance < thresholdDistance) {
+    digitalWrite(ledPin, HIGH); // Turn light ON
+  } else {
+    digitalWrite(ledPin, LOW);  // Turn light OFF
+  }
+
+  delay(100); // Short delay between readings
+}
