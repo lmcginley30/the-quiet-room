@@ -160,6 +160,10 @@ async function start() {
     requestAnimationFrame(tick);
   } catch (err) {
     console.error(err);
+    if (video.srcObject) {
+      for (const track of video.srcObject.getTracks()) track.stop();
+      video.srcObject = null;
+    }
     showFailure(`Camera did not start: ${err.message}`);
   }
 }
